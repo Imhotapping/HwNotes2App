@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">Мои Заметки</string>
+    <string name="no_notes">Заметок пока нет\n\nНажмите + чтобы добавить первую</string>
+</resources>
