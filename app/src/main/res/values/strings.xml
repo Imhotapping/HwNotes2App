@@ -1,4 +1,12 @@
 <resources>
     <string name="app_name">Мои Заметки</string>
     <string name="no_notes">Заметок пока нет\n\nНажмите + чтобы добавить первую</string>
+    <string name="edit_note">Редактировать заметку</string>
+    <string name="new_note">Новая заметка</string>
+    <string name="popupmenu_edit">Редактировать</string>
+    <string name="popupmenu_delete">Удалить</string>
+    <string name="toast_note_deleted">Заметка удалена</string>
+    <string name="toast_note_added">Заметка добавлена</string>
+    <string name="toast_note_updated">Заметка обновлена</string>
+    <string name="toast_error_data_not_received">Ошибка: данные заметки не получены</string>
 </resources>

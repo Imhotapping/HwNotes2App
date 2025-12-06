@@ -36,14 +36,14 @@ public class AddEditNoteActivity extends AppCompatActivity {
             position = intent.getIntExtra(EXTRA_POSITION, -1);
 
             if (note != null) {
-                titleTextView.setText("Редактировать заметку");
+                titleTextView.setText(R.string.edit_note);
                 titleEditText.setText(note.getTitle());
                 contentEditText.setText(note.getContent());
             }
         } else {
 
             note = new Note("", "");
-            titleTextView.setText("Новая заметка");
+            titleTextView.setText(R.string.new_note);
         }
 
         saveButton.setOnClickListener(new View.OnClickListener() {

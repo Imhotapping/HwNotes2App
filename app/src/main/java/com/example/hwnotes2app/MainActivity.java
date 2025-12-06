@@ -110,8 +110,8 @@ public class MainActivity extends AppCompatActivity {
 
     private void showPopupMenu(int position, View view) {
         PopupMenu popupMenu = new PopupMenu(this, view);
-        popupMenu.getMenu().add(1, 1, 1, "Редактировать");
-        popupMenu.getMenu().add(1, 2, 2, "Удалить");
+        popupMenu.getMenu().add(1, 1, 1, R.string.popupmenu_edit);
+        popupMenu.getMenu().add(1, 2, 2, R.string.popupmenu_delete);
 
         popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
@@ -143,7 +143,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void deleteNote(int position) {
         viewModel.deleteNote(position);
-        Toast.makeText(this, "Заметка удалена", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, R.string.toast_note_deleted, Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -153,18 +153,18 @@ public class MainActivity extends AppCompatActivity {
         if (resultCode == RESULT_OK && data != null) {
             Note note = (Note) data.getSerializableExtra(AddEditNoteActivity.EXTRA_NOTE);
             if (note == null) {
-                Toast.makeText(this, "Ошибка: данные заметки не получены", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, R.string.toast_error_data_not_received, Toast.LENGTH_SHORT).show();
                 return;
             }
 
             if (requestCode == ADD_NOTE_REQUEST) {
                 viewModel.addNote(note);
-                Toast.makeText(this, "Заметка добавлена", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, R.string.toast_note_added, Toast.LENGTH_SHORT).show();
             } else if (requestCode == EDIT_NOTE_REQUEST) {
                 int position = data.getIntExtra(AddEditNoteActivity.EXTRA_POSITION, -1);
                 if (position != -1) {
                     viewModel.updateNote(position, note);
-                    Toast.makeText(this, "Заметка обновлена", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, R.string.toast_note_updated, Toast.LENGTH_SHORT).show();
                 }
             }
         }
