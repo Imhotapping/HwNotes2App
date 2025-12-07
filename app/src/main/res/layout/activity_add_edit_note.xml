@@ -10,19 +10,19 @@
         android:id="@+id/titleTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Новая заметка"
+        android:text="@string/new_note"
         android:textColor="#212121"
-        android:textSize="24sp"
+        android:textSize="@dimen/text_size_24sp"
         android:textStyle="bold"
-        android:layout_marginBottom="16dp" />
+        android:layout_marginBottom="@dimen/margin_16dp" />
 
     <EditText
         android:id="@+id/titleEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Заголовок"
-        android:textSize="18sp"
-        android:layout_marginBottom="16dp"
+        android:hint="@string/note_head"
+        android:textSize="@dimen/text_size_18sp"
+        android:layout_marginBottom="@dimen/margin_16dp"
         android:padding="12dp"
         android:background="@drawable/edittext_background" />
 
@@ -32,19 +32,19 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         android:gravity="top"
-        android:hint="Содержание заметки..."
+        android:hint="@string/note_content"
         android:inputType="textMultiLine"
         android:minLines="10"
-        android:textSize="16sp"
+        android:textSize="@dimen/text_size_16sp"
         android:padding="12dp"
         android:background="@drawable/edittext_background"
-        android:layout_marginBottom="16dp" />
+        android:layout_marginBottom="@dimen/margin_16dp" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_marginTop="8dp">
+        android:layout_marginTop="@dimen/margin_8dp">
 
         <Button
             android:id="@+id/saveButton"
@@ -53,7 +53,7 @@
             android:layout_weight="1"
             android:layout_marginEnd="@dimen/margin_8dp"
             android:backgroundTint="#2196F3"
-            android:text="Сохранить"
+            android:text="@string/save"
             android:textColor="#FFFFFF" />
 
         <Button
@@ -63,7 +63,7 @@
             android:layout_weight="1"
             android:layout_marginStart="@dimen/margin_8dp"
             android:backgroundTint="#FFFFFF"
-            android:text="Отмена"
+            android:text="@string/cancel"
             android:textColor="#2196F3" />
 
     </LinearLayout>

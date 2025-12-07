@@ -9,4 +9,9 @@
     <string name="toast_note_added">Заметка добавлена</string>
     <string name="toast_note_updated">Заметка обновлена</string>
     <string name="toast_error_data_not_received">Ошибка: данные заметки не получены</string>
+    <string name="add_note">Добавить заметку</string>
+    <string name="note_head">Заголовок</string>
+    <string name="note_content">Содержание заметки...</string>
+    <string name="save">Сохранить</string>
+    <string name="cancel">Отмена</string>
 </resources>
