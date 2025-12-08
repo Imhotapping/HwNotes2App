@@ -6,7 +6,15 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+
+
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+import java.util.UUID;
 
 public class AddEditNoteActivity extends AppCompatActivity {
     public static final String EXTRA_NOTE = "note";
@@ -22,6 +30,13 @@ public class AddEditNoteActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_edit_note);
 
+        androidx.appcompat.widget.Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+        }
+
         TextView titleTextView = findViewById(R.id.titleTextView);
 
         titleEditText = findViewById(R.id.titleEditText);
@@ -30,20 +45,20 @@ public class AddEditNoteActivity extends AppCompatActivity {
         Button cancelButton = findViewById(R.id.cancelButton);
 
         Intent intent = getIntent();
-        if (intent != null && intent.hasExtra(EXTRA_NOTE)) {
+        if (intent != null) {
+            if (intent.hasExtra(EXTRA_NOTE)) {
 
-            note = (Note) intent.getSerializableExtra(EXTRA_NOTE);
-            position = intent.getIntExtra(EXTRA_POSITION, -1);
+                note = intent.getParcelableExtra(EXTRA_NOTE);
+                position = intent.getIntExtra(EXTRA_POSITION, -1);
 
-            if (note != null) {
-                titleTextView.setText(R.string.edit_note);
-                titleEditText.setText(note.getTitle());
-                contentEditText.setText(note.getContent());
+                if (note != null) {
+                    titleTextView.setText(R.string.edit_note);
+                    titleEditText.setText(note.getTitle());
+                    contentEditText.setText(note.getContent());
+                }
+            } else {
+                titleTextView.setText(R.string.new_note);
             }
-        } else {
-
-            note = new Note("", "");
-            titleTextView.setText(R.string.new_note);
         }
 
         saveButton.setOnClickListener(new View.OnClickListener() {
@@ -61,23 +76,38 @@ public class AddEditNoteActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
+    }
+
     private void saveNote() {
         String title = titleEditText.getText().toString().trim();
         String content = contentEditText.getText().toString().trim();
 
-        if (title.isEmpty() && content.isEmpty()) {
-            setResult(RESULT_CANCELED);
-            finish();
-            return;
+        Intent data = new Intent();
+        String currentDate = getCurrentDate();
+
+        if (note != null) {
+            note.setTitle(title);
+            note.setContent(content);
+            note.setUpdatedDate(currentDate);
+            data.putExtra(EXTRA_NOTE, note);
+            data.putExtra(EXTRA_POSITION, position);
+        } else {
+            String id = UUID.randomUUID().toString();
+            Note newNote = new Note(id, title, content, currentDate);
+            data.putExtra(EXTRA_NOTE, newNote);
+
+
         }
 
-        note.setTitle(title);
-        note.setContent(content);
-
-        Intent resultIntent = new Intent();
-        resultIntent.putExtra(EXTRA_NOTE, note);
-        resultIntent.putExtra(EXTRA_POSITION, position);
-        setResult(RESULT_OK, resultIntent);
+        setResult(RESULT_OK, data);
         finish();
+    }
+    private String getCurrentDate() {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm", Locale.getDefault());
+        return sdf.format(new Date());
     }
 }

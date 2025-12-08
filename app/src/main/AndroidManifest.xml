@@ -30,6 +30,7 @@
         <activity
             android:name=".AddEditNoteActivity"
             android:exported="false"
+            android:launchMode="standard"
             android:theme="@style/Theme.NotesApp" />
 
     </application>

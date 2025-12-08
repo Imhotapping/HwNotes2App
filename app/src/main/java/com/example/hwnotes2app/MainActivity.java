@@ -10,6 +10,8 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.widget.PopupMenu;
 import android.widget.Toast;
+import androidx.appcompat.widget.Toolbar;
+
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
@@ -29,6 +31,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        androidx.appcompat.widget.Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
         setupSafeArea();
 
@@ -134,7 +139,7 @@ public class MainActivity extends AppCompatActivity {
     private void editNote(int position) {
         Note note = adapter.getNote(position);
         if (note != null) {
-            Intent intent = new Intent(this, AddEditNoteActivity.class);
+            Intent intent = new Intent(MainActivity.this, AddEditNoteActivity.class);
             intent.putExtra(AddEditNoteActivity.EXTRA_NOTE, note);
             intent.putExtra(AddEditNoteActivity.EXTRA_POSITION, position);
             startActivityForResult(intent, EDIT_NOTE_REQUEST);
@@ -151,7 +156,7 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (resultCode == RESULT_OK && data != null) {
-            Note note = (Note) data.getSerializableExtra(AddEditNoteActivity.EXTRA_NOTE);
+            Note note = data.getParcelableExtra(AddEditNoteActivity.EXTRA_NOTE);
             if (note == null) {
                 Toast.makeText(this, R.string.toast_error_data_not_received, Toast.LENGTH_SHORT).show();
                 return;

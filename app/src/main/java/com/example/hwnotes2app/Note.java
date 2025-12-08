@@ -1,46 +1,92 @@
 package com.example.hwnotes2app;
 
-import java.io.Serializable;
-import java.util.Date;
-import java.util.UUID;
+import android.os.Parcel;
+import android.os.Parcelable;
 
-public class Note implements Serializable {
+public class Note implements Parcelable {
     private String id;
     private String title;
     private String content;
-    private Date createdDate;
-    private Date updatedDate;
+    private String createdDate;
+    private String updatedDate;
 
-    public Note() {
-    }
-
-    public Note(String title, String content) {
-        this.id = UUID.randomUUID().toString();
+    // Конструктор для новой заметки
+    public Note(String id, String title, String content, String createdDate) {
+        this.id = id;
         this.title = title;
         this.content = content;
-        this.createdDate = new Date();
-        this.updatedDate = new Date();
+        this.createdDate = createdDate;
+        this.updatedDate = createdDate; // При создании обе даты одинаковы
+    }
+
+    // Пустой конструктор (для Gson или других случаев)
+    public Note() {
+        // Пустой конструктор
     }
 
 
-    public String getId() { return id; }
-    public void setId(String id) { this.id = id; }
+    // Геттеры и сеттеры
+    public String getId() {
+        return id;
+    }
 
-    public String getTitle() { return title; }
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
     public void setTitle(String title) {
         this.title = title;
-        this.updatedDate = new Date();
     }
 
-    public String getContent() { return content; }
+    public String getContent() {
+        return content;
+    }
+
     public void setContent(String content) {
         this.content = content;
-        this.updatedDate = new Date();
     }
 
-    public Date getCreatedDate() { return createdDate; }
-    public void setCreatedDate(Date createdDate) { this.createdDate = createdDate; }
+    public String getCreatedDate() { return createdDate; }
+    public void setCreatedDate(String createdDate) { this.createdDate = createdDate; }
 
-    public Date getUpdatedDate() { return updatedDate; }
-    public void setUpdatedDate(Date updatedDate) { this.updatedDate = updatedDate; }
+    public String getUpdatedDate() { return updatedDate; }
+    public void setUpdatedDate(String updatedDate) { this.updatedDate = updatedDate; }
+
+    protected Note(Parcel in) {
+        id = in.readString();
+        title = in.readString();
+        content = in.readString();
+        createdDate = in.readString();
+        updatedDate = in.readString();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(id);
+        dest.writeString(title);
+        dest.writeString(content);
+        dest.writeString(createdDate);
+        dest.writeString(updatedDate);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<Note> CREATOR = new Creator<Note>() {
+        @Override
+        public Note createFromParcel(Parcel in) {
+            return new Note(in);
+        }
+
+        @Override
+        public Note[] newArray(int size) {
+            return new Note[size];
+        }
+    };
 }
