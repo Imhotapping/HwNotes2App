@@ -11,13 +11,20 @@ import android.view.MenuItem;
 import android.widget.PopupMenu;
 import android.widget.Toast;
 import androidx.appcompat.widget.Toolbar;
-
+import android.Manifest;
+import android.content.pm.PackageManager;
+import android.os.Build;
+import android.widget.Toast;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 public class MainActivity extends AppCompatActivity {
     private static final int ADD_NOTE_REQUEST = 1;
@@ -27,10 +34,15 @@ public class MainActivity extends AppCompatActivity {
     private NotesAdapter adapter;
     private NotesViewModel viewModel;
 
+    private static final int PERMISSION_REQUEST_CODE = 1001;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            requestNotificationPermission();}
 
         androidx.appcompat.widget.Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -40,6 +52,45 @@ public class MainActivity extends AppCompatActivity {
         initViews();
         initViewModel();
         initRecyclerView();
+    }
+
+    private void requestNotificationPermission() {
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                    Manifest.permission.POST_NOTIFICATIONS)) {
+
+                Toast.makeText(this,
+                        "Разрешите уведомления, чтобы получать напоминания о заметках",
+                        Toast.LENGTH_LONG).show();
+            }
+
+            // Запрашиваем разрешение
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.POST_NOTIFICATIONS},
+                    PERMISSION_REQUEST_CODE);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode == PERMISSION_REQUEST_CODE) {
+            if (grantResults.length > 0 &&
+                    grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                Toast.makeText(this, "Разрешение на уведомления предоставлено",
+                        Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this,
+                        "Без разрешения уведомления не будут работать",
+                        Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 
     private void setupSafeArea() {

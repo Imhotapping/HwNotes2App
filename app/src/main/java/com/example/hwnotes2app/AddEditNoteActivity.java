@@ -17,6 +17,8 @@ import java.util.Locale;
 import java.util.UUID;
 
 public class AddEditNoteActivity extends AppCompatActivity {
+
+    private NotificationHelper notificationHelper;
     public static final String EXTRA_NOTE = "note";
     public static final String EXTRA_POSITION = "position";
 
@@ -29,6 +31,8 @@ public class AddEditNoteActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_edit_note);
+
+        notificationHelper = new NotificationHelper(this);
 
         androidx.appcompat.widget.Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -95,10 +99,24 @@ public class AddEditNoteActivity extends AppCompatActivity {
             note.setUpdatedDate(currentDate);
             data.putExtra(EXTRA_NOTE, note);
             data.putExtra(EXTRA_POSITION, position);
+
+            if (notificationHelper.canShowNotification()) {
+                notificationHelper.showNotification(
+                        "Заметка обновлена",
+                        "Заметка \"" + title + "\" была обновлена"
+                );
+            }
         } else {
             String id = UUID.randomUUID().toString();
             Note newNote = new Note(id, title, content, currentDate);
             data.putExtra(EXTRA_NOTE, newNote);
+
+            if (notificationHelper.canShowNotification()) {
+                notificationHelper.showNotification(
+                        "Новая заметка создана",
+                        "Заметка \"" + title + "\" была добавлена"
+                );
+            }
 
 
         }
