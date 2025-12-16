@@ -1,7 +1,10 @@
 package com.example.hwnotes2app;
 
 import android.content.Intent;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.os.Build;
+import android.os.Handler;
 import android.view.View;
 import android.view.WindowInsets;
 import androidx.core.view.ViewCompat;
@@ -13,8 +16,6 @@ import android.widget.Toast;
 import androidx.appcompat.widget.Toolbar;
 import android.Manifest;
 import android.content.pm.PackageManager;
-import android.os.Build;
-import android.widget.Toast;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.annotation.Nullable;
@@ -25,6 +26,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.ObjectAnimator;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.view.animation.BounceInterpolator;
+import android.view.animation.OvershootInterpolator;
 
 public class MainActivity extends AppCompatActivity {
     private static final int ADD_NOTE_REQUEST = 1;
@@ -33,6 +41,10 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private NotesAdapter adapter;
     private NotesViewModel viewModel;
+
+    private FloatingActionButton fab;
+    private Animation fabPulseAnimation;
+    private boolean isFabBounced = false;
 
     private static final int PERMISSION_REQUEST_CODE = 1001;
 
@@ -115,14 +127,95 @@ public class MainActivity extends AppCompatActivity {
     private void initViews() {
         recyclerView = findViewById(R.id.recyclerView);
 
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        fab = findViewById(R.id.fab);
+        fabPulseAnimation = AnimationUtils.loadAnimation(this, R.anim.fab_pulse);
+
+        // Анимация появления FAB с задержкой
+        new Handler().postDelayed(() -> {
+            showFabWithBounce();
+        }, 300);
+
+        fab.setOnClickListener(v -> {
+            animateFabPulse();
+            // Добавляем небольшую задержку
+            new Handler().postDelayed(() -> {
                 Intent intent = new Intent(MainActivity.this, AddEditNoteActivity.class);
                 startActivityForResult(intent, ADD_NOTE_REQUEST);
-            }
+                // Анимация
+                overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_down);
+            }, 200);
         });
+    }
+
+    private void showFabWithBounce() {
+        // Используем ObjectAnimator
+        ObjectAnimator animator = ObjectAnimator.ofFloat(fab, "translationY", 200f, 0f);
+        animator.setDuration(800);
+        animator.setInterpolator(new OvershootInterpolator(1.0f));
+        animator.start();
+
+        fab.setScaleX(0.5f);
+        fab.setScaleY(0.5f);
+        fab.animate()
+                .scaleX(1f)
+                .scaleY(1f)
+                .setDuration(600)
+                .setInterpolator(new BounceInterpolator())
+                .start();
+    }
+
+    private void animateFabPulse() {
+        fab.startAnimation(fabPulseAnimation);
+
+        // Дополнительная анимация
+        fab.animate()
+                .scaleX(0.9f)
+                .scaleY(0.9f)
+                .setDuration(100)
+                .withEndAction(() -> {
+                    fab.animate()
+                            .scaleX(1f)
+                            .scaleY(1f)
+                            .setDuration(200)
+                            .setInterpolator(new BounceInterpolator())
+                            .start();
+                })
+                .start();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Анимация при возврате на главный экран
+        if (fab != null && fab.getVisibility() == View.VISIBLE) {
+            fab.animate()
+                    .translationY(0)
+                    .scaleX(1f)
+                    .scaleY(1f)
+                    .setDuration(300)
+                    .start();
+        }
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (hasFocus && !isFabBounced) {
+            // Анимация "подпрыгивания" при первом получении фокуса
+            fab.animate()
+                    .translationY(-20)
+                    .setDuration(200)
+                    .setStartDelay(500)
+                    .withEndAction(() -> {
+                        fab.animate()
+                                .translationY(0)
+                                .setDuration(200)
+                                .setInterpolator(new BounceInterpolator())
+                                .start();
+                    })
+                    .start();
+            isFabBounced = true;
+        }
     }
 
     private void initViewModel() {
